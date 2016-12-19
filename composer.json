@@ -1,0 +1,42 @@
+{
+    "name": "heimrichhannot/contao-linkchecker",
+    "description": "Simple link checker tool, that comes with an back end widget and LinkChecker class.",
+    "keywords": [
+        "contao",
+        "linkchecker",
+        "links",
+        "html"
+    ],
+    "type": "contao-module",
+    "homepage": "https://github.com/heimrichhannot/contao-linkchecker",
+    "license": "LGPL-3.0+",
+    "authors": [
+        {
+            "name": "Heimrich & Hannot",
+            "email": "digitales@heimrich-hannot.de",
+            "homepage": "http://www.heimrich-hannot.de",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/heimrichhannot/contao-linkchecker/issues"
+    },
+    "require": {
+        "contao/core": ">=3.4,<4-dev",
+        "heimrichhannot/contao-haste_plus": "^1.5.5",
+        "heimrichhannot/contao-ajax": "~1.0",
+        "wa72/htmlpagedom" : "^1.3"
+    },
+    "autoload": {
+        "classmap": [
+            ""
+        ]
+    },
+    "extra": {
+        "contao": {
+            "sources": {
+                "": "system/modules/linkchecker"
+            }
+        }
+    }
+}
