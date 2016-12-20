@@ -16,11 +16,11 @@ $GLOBALS['BE_FFL']['linkChecker'] = 'HeimrichHannot\LinkChecker\Widgets\LinkChec
 /**
  * Assets
  */
-$GLOBALS['TL_JAVASCRIPT']['linkchecker'] = 'system/modules/linkchecker/assets/js/linkchecker.js';
+$GLOBALS['TL_JAVASCRIPT']['linkchecker'] = 'system/modules/linkchecker/assets/js/linkchecker.min.js|static';
 
 if (TL_MODE == 'BE')
 {
-    $GLOBALS['TL_CSS']['linkchecker'] = 'system/modules/linkchecker/assets/css/be_linkchecker.css|static';
+    $GLOBALS['TL_CSS']['linkchecker'] = 'system/modules/linkchecker/assets/css/be_linkchecker.min.css|static';
 }
 
 /**

@@ -5,3 +5,5 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - removed unused constants
+- minified asset css/js 
+- removed console.log

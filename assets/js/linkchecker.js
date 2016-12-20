@@ -43,7 +43,6 @@
     LinkChecker.prototype.test = function () {
         var xhr;
         xhr = new XMLHttpRequest();
-        console.log();
         method = "post";
         url = this.element.getAttribute('data-url');
         xhr.open(method, url, true);
