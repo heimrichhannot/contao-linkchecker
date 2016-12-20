@@ -15,6 +15,4 @@ $arrLang = &$GLOBALS['TL_LANG']['linkChecker'];
  */
 $arrLang['statusCodes'][\HeimrichHannot\LinkChecker\LinkChecker::STATUS_MAILTO] = 'E-Mail Adressen werden nicht geprüft.';
 $arrLang['statusCodes'][\HeimrichHannot\LinkChecker\LinkChecker::STATUS_INVALID] = 'Ungültige URL, kann nicht geprüft werden.';
-$arrLang['statusCodes'][\HeimrichHannot\LinkChecker\LinkChecker::STATUS_TIMEOUT] = 'HTTP/1.1 408 Request Time-out';
-$arrLang['statusCodes'][\HeimrichHannot\LinkChecker\LinkChecker::STATUS_OK] = 'HTTP/1.1 200 <span class="lc-success">OK</span>';
-
+$arrLang['statusCodes'][\HeimrichHannot\LinkChecker\LinkChecker::STATUS_TIMEOUT] = 'HTTP/1.0 408 Request Time-out';

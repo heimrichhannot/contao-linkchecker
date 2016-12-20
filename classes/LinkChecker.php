@@ -17,8 +17,7 @@ class LinkChecker
 {
     const STATUS_MAILTO  = 'mailto';
     const STATUS_INVALID = 'invalid';
-    const STATUS_TIMEOUT = 'HTTP/1.1 408 Request Timeout';
-    const STATUS_OK      = 'HTTP/1.1 200 OK';
+    const STATUS_TIMEOUT = 'HTTP/1.0 408 Request Timeout';
 
     const CLASS_DEFAULT = 'lc-default';
     const CLASS_INFO    = 'lc-info';
