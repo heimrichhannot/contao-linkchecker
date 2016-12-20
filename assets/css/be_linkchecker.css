@@ -16,9 +16,8 @@
   vertical-align: bottom;
   background-color: #f3f3f3;
 }
-.linkchecker table > tfoot > tr > td {
-  vertical-align: top;
-  border-top: 2px solid #dddddd;
+.linkchecker table > tbody > tr:last-child > td {
+  border-bottom: 2px solid #dddddd;
 }
 .linkchecker table > caption + thead > tr:first-child > th,
 .linkchecker table > colgroup + thead > tr:first-child > th,

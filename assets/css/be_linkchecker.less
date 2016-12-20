@@ -29,10 +29,8 @@
       background-color: @table-header-background;
     }
 
-    // Top align for column footer
-    > tfoot > tr > td {
-      vertical-align: top;
-      border-top: 2px solid @table-border-color;
+    > tbody > tr:last-child > td {
+      border-bottom: 2px solid @table-border-color;
     }
 
     // Remove top border from thead by default
