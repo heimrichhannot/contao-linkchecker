@@ -1,5 +1,5 @@
 (function () {
-    var LinkChecker;
+    var LinkChecker, _requests = [];
 
     function LinkChecker(element, options) {
         this.element = element;
@@ -31,115 +31,174 @@
         );
 
         this.params = params;
-
-        this.init();
     }
 
-    LinkChecker.prototype.init = function () {
-        this.test();
-    };
-
-
     LinkChecker.prototype.test = function () {
-        var xhr;
-        xhr = new XMLHttpRequest();
-        method = "post";
-        url = this.element.getAttribute('data-url');
-        xhr.open(method, url, true);
-        xhr.withCredentials = !!this.options.withCredentials;
-        response = null;
-        handleError = (function (_this) {
-            return function () {
-                return false;
-            };
-        })(this);
-        updateProgress = (function (_this) {
-            return function (e) {
-            };
-        })(this);
-        xhr.onload = (function (_this) {
-            return function (e) {
-                var _ref;
-                if (xhr.readyState !== 4) {
-                    return;
+        return (function (_this) {
+            return new Promise(function (resolve, reject) {
+                method = "post";
+                url = _this.element.getAttribute('data-url');
+
+                var xhr = new XMLHttpRequest();
+                xhr.open(method, url, true);
+                xhr.withCredentials = !!_this.options.withCredentials;
+                response = null;
+                updateProgress = function() {
+                    return function (e) {
+                    };
+                };
+                xhr.onload = function(){
+                    var _ref;
+                    if (xhr.readyState !== 4) {
+                        reject({
+                            status: this.status,
+                            statusText: xhr.statusText
+                        });
+                    }
+                    response = xhr.responseText;
+                    if (xhr.getResponseHeader("content-type") && ~xhr.getResponseHeader("content-type").indexOf("application/json")) {
+                        try {
+                            response = JSON.parse(response);
+                        } catch (_error) {
+                            response = "Invalid JSON response from server.";
+                        }
+                    }
+                    if (!((200 <= (_ref = xhr.status) && _ref < 300))) {
+                        reject({
+                            status: this.status,
+                            statusText: xhr.statusText
+                        });
+                    } else {
+                        _this._finished(response);
+                        resolve(xhr.response);
+                    }
+                };
+                xhr.onerror = function () {
+                    reject({
+                        status: this.status,
+                        statusText: xhr.statusText
+                    });
+                };
+                progressObj = (_ref = xhr.upload) != null ? _ref : xhr;
+                progressObj.onprogress = updateProgress;
+                headers = {
+                    "Accept": "application/json",
+                    "Cache-Control": "no-cache",
+                    "X-Requested-With": "XMLHttpRequest"
+                };
+                if (_this.options.headers) {
+                    extend(headers, _this.options.headers);
                 }
-                response = xhr.responseText;
-                if (xhr.getResponseHeader("content-type") && ~xhr.getResponseHeader("content-type").indexOf("application/json")) {
-                    try {
-                        response = JSON.parse(response);
-                    } catch (_error) {
-                        e = _error;
-                        response = "Invalid JSON response from server.";
+                for (headerName in headers) {
+                    headerValue = headers[headerName];
+                    if (headerValue) {
+                        xhr.setRequestHeader(headerName, headerValue);
                     }
                 }
-                if (!((200 <= (_ref = xhr.status) && _ref < 300))) {
-                    return handleError();
-                } else {
-                    return _this._finished(response, e);
+                formData = new FormData();
+                if (_this.params) {
+                    _ref1 = _this.params;
+                    for (key in _ref1) {
+                        value = _ref1[key];
+                        formData.append(key, value);
+                    }
                 }
-            };
-        })(this);
-        xhr.onerror = (function (_this) {
-            return function () {
-                return handleError();
-            };
-        })(this);
-        progressObj = (_ref = xhr.upload) != null ? _ref : xhr;
-        progressObj.onprogress = updateProgress;
-        headers = {
-            "Accept": "application/json",
-            "Cache-Control": "no-cache",
-            "X-Requested-With": "XMLHttpRequest"
-        };
-        if (this.options.headers) {
-            extend(headers, this.options.headers);
-        }
-        for (headerName in headers) {
-            headerValue = headers[headerName];
-            if (headerValue) {
-                xhr.setRequestHeader(headerName, headerValue);
-            }
-        }
-        formData = new FormData();
-        if (this.params) {
-            _ref1 = this.params;
-            for (key in _ref1) {
-                value = _ref1[key];
-                formData.append(key, value);
-            }
-        }
 
-        return this.submitRequest(xhr, formData);
+                _requests.push(xhr);
+
+                _this.submitRequest(xhr, formData);
+            });
+        })(this);
     };
 
     LinkChecker.prototype.submitRequest = function (xhr, formData) {
-        return xhr.send(formData);
+        xhr.send(formData);
     };
 
-    LinkChecker.prototype._finished = function (responseText, e) {
-        if (responseText.result == 'undefined' || responseText.result.html == 'undefined') {
-            return false;
+    LinkChecker.prototype._finished = function (responseText) {
+        if (typeof responseText.result != 'undefined' && "html" in responseText.result) {
+            this.target.innerHTML = responseText.result.html;
+            return true;
         }
-        this.target.innerHTML = responseText.result.html;
+
+        this.target.innerHTML = '-';
+
+        return false;
     };
 
     LinkCheckerRegistry = {
         init: function () {
             this.register();
         },
+        abort: function () {
+            this.stopRecursion = true;
+        },
+        runRecursiveFunction: function(func, arguments, callback) {
+            if (arguments.length < 1)
+            {
+                if (typeof callback !== 'undefined')
+                {
+                    callback();
+                }
+
+                return;
+            }
+
+            var argument = arguments[0],
+                remainingArguments = Array.prototype.slice.call(arguments,1);
+
+            func(argument, remainingArguments, callback);
+        },
         register: function () {
 
-            var elements = document.querySelectorAll('[data-linkchecker]');
+            var self = this,
+                elements = document.querySelectorAll('[data-linkchecker]'),
+                config = {};
 
-            for (var i = 0, len = elements.length; i < len; i++) {
-                var element = elements[i],
-                    config = {};
 
-                // do not attach Dropzone again
-                if (typeof element.linkchecker != 'undefined') continue;
 
-                new LinkChecker(element, config);
-            }
+            (function (_this){
+
+                function myFunc(element, remainingElements, callback) {
+
+                    if(_this.stopRecursion){
+
+                        for (var i = 0, len = _requests.length; i < len; i++) {
+                            var xhr = _requests[i];
+                            xhr.abort();
+                        }
+
+                        return;
+                    }
+
+                    // do not attach linkchecker again
+                    if (typeof element.linkchecker != 'undefined')
+                    {
+                        _this.runRecursiveFunction(myFunc, remainingElements, callback);
+                        return;
+                    }
+
+                    var lc = new LinkChecker(element, config);
+
+                    lc.test().then(function(){
+                        _this.runRecursiveFunction(myFunc, remainingElements, callback);
+                    }).catch(function (err) {
+                        _this.runRecursiveFunction(myFunc, remainingElements, callback);
+                    });
+                }
+
+                _this.runRecursiveFunction(myFunc, elements);
+            })(this);
+
+
+            // for (var i = 0, len = elements.length; i < len; i++) {
+            //     var element = elements[i],
+            //         config = {};
+            //
+            //
+            //
+            //     break;
+            // }
         }
     };
 
@@ -152,6 +211,10 @@
         jQuery(document).ajaxComplete(function () {
             LinkCheckerRegistry.init();
         });
+
+        jQuery(window).on('beforeunload', function () {
+            LinkCheckerRegistry.abort();
+        });
     }
 
     // mootools support
@@ -163,6 +226,10 @@
 
         window.addEvent('ajax_change', function () {
             LinkCheckerRegistry.init();
+        });
+
+        window.addEvent('beforeunload', function () {
+            LinkCheckerRegistry.abort();
         });
     }
 

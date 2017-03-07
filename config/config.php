@@ -16,7 +16,8 @@ $GLOBALS['BE_FFL']['linkChecker'] = 'HeimrichHannot\LinkChecker\Widgets\LinkChec
 /**
  * Assets
  */
-$GLOBALS['TL_JAVASCRIPT']['linkchecker'] = 'system/modules/linkchecker/assets/js/linkchecker.min.js|static';
+$GLOBALS['TL_JAVASCRIPT']['promise-polyfill'] = 'system/modules/linkchecker/assets/vendor/promise-polyfill/promise.min.js|static';
+$GLOBALS['TL_JAVASCRIPT']['linkchecker'] = 'system/modules/linkchecker/assets/js/linkchecker.js|static';
 
 if (TL_MODE == 'BE')
 {

@@ -1,6 +1,11 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## [1.0.3] - 2016-12-20
+
+### Fixed
+- Promise link check handling implemented to prevent ajax requests blocking page reload or submit 
+
 ## [1.0.2] - 2016-12-20
 
 ### Fixed
