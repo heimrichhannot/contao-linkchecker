@@ -155,8 +155,6 @@
                 elements = document.querySelectorAll('[data-linkchecker]'),
                 config = {};
 
-
-
             (function (_this){
 
                 function myFunc(element, remainingElements, callback) {
@@ -189,16 +187,6 @@
 
                 _this.runRecursiveFunction(myFunc, elements);
             })(this);
-
-
-            // for (var i = 0, len = elements.length; i < len; i++) {
-            //     var element = elements[i],
-            //         config = {};
-            //
-            //
-            //
-            //     break;
-            // }
         }
     };
 
