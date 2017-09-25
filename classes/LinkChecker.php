@@ -45,11 +45,11 @@ class LinkChecker
     /**
      * Test a single url
      *
-     * @param $strUrl The url
+     * @param string $strUrl The url
      *
      * @return bool|mixed The translated status code, or false if the link was not tested
      */
-    protected function testOne($strUrl)
+    protected static function testOne($strUrl)
     {
         if (StringUtil::startsWith($strUrl, 'mailto:'))
         {
@@ -76,7 +76,7 @@ class LinkChecker
      *
      * @return array The  list of tested links with translated status code, or false if the link was not tested
      */
-    protected function testAll(array $arrLinks)
+    protected static function testAll(array $arrLinks)
     {
         $arrResults = array();
 
